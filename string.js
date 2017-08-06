@@ -1,7 +1,4 @@
-(function(global) { 'use strict'; const factory = function es6lib_string(exports) { // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
-
-/// RegExpX has been removed
-Object.defineProperty(exports, 'RegExpX', { get() { throw new Error(`'RegExpX' has been removed from this file, use the 'regexpx' module instead`); }, });
+(function(global) { 'use strict'; const factory = function es6lib_string(exports) { // license: MIT
 
 /**
  * Pads or truncates a string on its left/start so that string.length === length.
@@ -26,7 +23,7 @@ exports.toFixedLength = toFixedLength; function toFixedLength(string, length, fi
  */
 const randomHex = exports.randomHex = (function() { try {
 	if (global.process && global.process.versions && global.process.versions.node) {
-		const rand = require('crypto').randomBytes;
+		const rand = require('cry'+'pto').randomBytes;
 		return function randomHex(chars, base) {
 			base = +base || 16;
 			const data = rand(Math.ceil(chars * Math.log2(base) / 7));
@@ -211,7 +208,7 @@ const htmlEscapeRegExp = new RegExp(Object.keys(htmlEscapeObject).join('|'), 'g'
  * @return {string}        The same markup without any HTML entities.
  */
 try {
-	const htmlUnscapeElement = document.createElement('textarea');
+	const htmlUnscapeElement = global.document.createElement('textarea');
 	exports.unescapeHtml = exports.decodeHtml = function(html) { htmlUnscapeElement.innerHTML = html; return htmlUnscapeElement.value; };
 } catch (error) { }
 
@@ -261,4 +258,3 @@ exports.removeEmptyLines = removeEmptyLines; function removeEmptyLines(string) {
 }
 
 }; if (typeof define === 'function' && define.amd) { define([ 'exports', ], factory); } else { const exp = { }, result = factory(exp) || exp; if (typeof exports === 'object' && typeof module === 'object') { module.exports = result; } else { global[factory.name] = result; } } })((function() { return this; })()); // eslint-disable-line
-

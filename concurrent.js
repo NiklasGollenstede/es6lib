@@ -1,4 +1,4 @@
-(function(global) { 'use strict'; const factory = function es6lib_concurrent(exports) { // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+(function(global) { 'use strict'; const factory = function es6lib_concurrent(exports) { // license: MIT
 
 const P_resolve = Promise.resolve.bind(Promise), P_reject = Promise.reject.bind(Promise), resolved = P_resolve();
 

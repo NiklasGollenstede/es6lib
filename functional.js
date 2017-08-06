@@ -1,4 +1,4 @@
-(function(global) { 'use strict'; const factory = function es6lib_functional(exports) { // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+(function(global) { 'use strict'; const factory = function es6lib_functional(exports) { // license: MIT
 /* global performance */
 
 /**
@@ -125,7 +125,7 @@ const hrtime = exports.hrtime = (function() {
 		const { hrtime, } = global.process;
 		return function () { const pair = hrtime(); return pair[0] * 1e3 + pair[1] / 1e6; }; // node
 	} else {
-		return require('chr' + 'ome').Cu.now; // firefox
+		return require('chr' + 'ome').Cu.now; /* global require, */ // firefox add-on
 	}
 })();
 
@@ -177,18 +177,24 @@ exports.blockEvent = blockEvent; function blockEvent(event) {
 /**
  * Wraps a function in a simple Map based cache. The cache key is the first argument passed to the resulting function.
  * @param  {function}  func   The function whose results are to be cached.
- * @param  {Map}       cache  Optional object with .get() and .set() functions (e.g. a WeakMap or Map). Defaults to a new Map().
+ * @param  {Map}       cache  Optional object with .has(), .get() and .set() functions (e.g. a WeakMap or Map).
+ *                            Defaults to a map that is weak for object values but also permits primitives.
  * @return {function}         The func parameter wrapped such that its return values will be cached with the first argument as the key. All arguments are forwarded to func.
  */
 exports.cached = cached; function cached(func, cache) {
-	cache = cache || new Map;
-	const ret = function(arg) {
+	cache = cache || {
+		weak: new WeakMap, strong: new Map,
+		for(key) { return (typeof key === 'object' && key !== null) || typeof key === 'function' ? this.weak : this.strong; },
+		set(key, value) { this.for(key).set(key, value); },
+		has(key) { this.for(key).has(key); },
+		get(key) { this.for(key).get(key); },
+	};
+	return function(arg) {
 		if (cache.has(arg)) { return cache.get(arg); }
 		const result = func.apply(this, arguments); // eslint-disable-line no-invalid-this
 		cache.set(arg, result);
 		return result;
 	};
-	return ret;
 }
 
 }; if (typeof define === 'function' && define.amd) { define([ 'exports', ], factory); } else { const exp = { }, result = factory(exp) || exp; if (typeof exports === 'object' && typeof module === 'object') { module.exports = result; } else { global[factory.name] = result; } } })((function() { return this; })()); // eslint-disable-line

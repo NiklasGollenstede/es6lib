@@ -1,4 +1,4 @@
-(function(global) { 'use strict'; const factory = function es6lib_network(exports) { // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+(function(global) { 'use strict'; const factory = function es6lib_network(exports) { // license: MIT
 
 /**
  * Constructs an XMLHttpRequest from the given url and options and returns a Promise

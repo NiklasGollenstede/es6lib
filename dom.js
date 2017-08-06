@@ -1,4 +1,4 @@
-(function(global) { 'use strict'; const factory = function es6lib_dom(exports) { // This Source Code Form is subject to the terms of the Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+(function(global) { 'use strict'; const factory = function es6lib_dom(exports) { // license: MIT
 
 /**
  * The functions in this module use the global windows context (document, URL, self, top, etc.) by default.
@@ -9,14 +9,6 @@ exports.window = global.window;
 /* eslint-disable no-invalid-this */
 
 /**
- * Returns true, if the current execution context is not a browser top level context.
- * I.e the current script is executed in an iframe.
- */
-exports.inIframe = inIframe; function inIframe() {
-	try { return ((this || global).window.self !== (this || global).window.top); } catch (e) { return true; }
-}
-
-/**
  * Creates a DOM Element and sets properties/attributes and children.
  * @param  {string}          tagName     Type of the new Element to create.
  * @param  {object}          properties  Optional. Object (not Array) of properties, which are deeply copied onto the new element.
@@ -24,6 +16,7 @@ exports.inIframe = inIframe; function inIframe() {
  * @return {Element}                     The new DOM element.
  */
 exports.createElement = createElement; function createElement(tagName, properties, childList) {
+	const document = (this || global).window.document;
 	const element = document.createElement(tagName);
 	if (Array.isArray(properties)) { childList = properties; properties = null; }
 	properties && (function assign(target, source) { Object.keys(source).forEach(key => {
@@ -92,9 +85,9 @@ exports.saveAs = saveAs; function saveAs(content, name) {
 /**
  * Attempts to open a file picker dialog.
  * NOTE: currently only works in Chrome, not in Firefox (52)!
- * @param  {[type]}           options  An object whose properties are copied to the underlying input element.
+ * @param  {object}           options  An object whose properties are copied to the underlying input element.
  *                                     Useful properties are 'accept' and 'multiple'.
- * @return {Promise<[File]>}           A Promise to a (possibly empty) Array of Files.
+ * @return {Promise<File>}             A Promise to a (possibly empty) Array of Files.
  *                                     Should reject if the dialog fails to open.
  */
 exports.loadFile = loadFile; function loadFile(options) { return new Promise(function(resolve, reject) {
@@ -143,15 +136,10 @@ exports.loadFile = loadFile; function loadFile(options) { return new Promise(fun
  * @return {Promise<String|ArrayBuffer}  Promise to the data read.
  */
 exports.readBlob = readBlob; function readBlob(blob, type) {
-	let reader;
 	return new Promise(function(resolve, reject) {
-		const window = (this || global).window;
-		reader = new window.FileReader;
+		const reader = new (this || global).window.FileReader;
 		reader.onerror = reject;
-		reader.onloadend = () => {
-			reader.onerror = reader.onloadend = null;
-			resolve(reader.result);
-		};
+		reader.onloadend = () => resolve(reader.result);
 
 		if (type == null || type === 'string') {
 			reader.readAsText(blob);
@@ -162,9 +150,6 @@ exports.readBlob = readBlob; function readBlob(blob, type) {
 		} else {
 			reader.readAsText(blob, type);
 		}
-	}).catch(error => {
-		if (reader) { reader.onerror = reader.onloadend = null; }
-		throw error;
 	});
 }
 
@@ -273,7 +258,7 @@ exports.getParent = getParent; function getParent(element, selector) {
  * @return {string}            String that matches /^(?!>)((?:^|>){{tagName}}(#{{id}})?(.{{class}})*)*$/
  */
 exports.getSelector = getSelector; function getSelector(element) {
-	const document = (this || global).window.document, strings = [ ];
+	const document = element.ownerDocument, strings = [ ];
 	while (element && element !== document) {
 		strings.add(
 			element.tagName
