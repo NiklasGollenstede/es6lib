@@ -218,10 +218,10 @@ try {
  * @return {string}          Escaped string such that eval('"'+ result +'"') === string
  */
 exports.escapeForString = exports.escapeString = escapeForString; function escapeForString(string) {
-	return String.prototype.replace.call(string != null ? string : '', /([\\\$\`\'\"])/g, '\\$1').replace(/\n/g, '\\n\\\n');
+	return String.prototype.replace.call(string != null ? string : '', /([\\$`'"])/g, '\\$1').replace(/\n/g, '\\n\\\n');
 }
 exports.escapeForTemplateString = escapeForTemplateString; function escapeForTemplateString(string) {
-	return String.prototype.replace.call(string != null ? string : '', /(\\|\$\{|\`)/g, '\\$1');
+	return String.prototype.replace.call(string != null ? string : '', /(\\|\$\{|`)/g, '\\$1');
 }
 
 exports.toString = toString; function toString(any) {

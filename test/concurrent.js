@@ -65,7 +65,7 @@ describe('"promised"ed should', () => {
 
 	it('return', done => {
 		function callback(error, value) {
-			if (error) { return void done(error); }
+			if (error) { done(error); return; }
 			value.should.equal(42);
 			done();
 		}
@@ -74,7 +74,7 @@ describe('"promised"ed should', () => {
 
 	it('forward `this´', done => {
 		function callback(error, value) {
-			if (error) { return void done(error); }
+			if (error) { done(error); return; }
 			value.should.equal(42);
 			done();
 		}

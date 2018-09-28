@@ -144,24 +144,24 @@ exports.assignDescriptors = assignDescriptors; function assignDescriptors(to, fr
 
 /**
  * Returns a Map where all the values are Sets, so that the map is effectively a multi map.
- * @param  {class}  MapType  The map type the MultiMap is derived from. (Map or WeakMap).
- * @return {class}           A MultiMap constructor.
+ * @param  {class}  MapType  The map type the `MultiMap` is derived from. (`Map` or `WeakMap`).
+ * @return {class}           A `MultiMap` constructor.
  */
 const MultiMapOf = MapType => class extends MapType {
 	/**
-	 * Creates a new MiltiMap.
+	 * Creates a new `MiltiMap`.
 	 * @param  {iterable}  init  Same as the Map constructor argument, only that the values must be iterable.
 	 */
 	constructor(init) {
 		super();
 		if (init == null) { return; }
-		for (const [ key, value, ] of init) {
+		for (const { 0:key, 1:value, } of init) {
 			super.set(key, new Set(value));
 		}
 	}
 
 	/**
-	 * Removes all existing values in a key range and puts 'value' as in that range.
+	 * Removes all existing values in a key range and puts `value` in that range.
 	 * @param {any}  key    Any key the parent map accepts.
 	 * @param {any}  value  Any value.
 	 */
@@ -182,9 +182,9 @@ const MultiMapOf = MapType => class extends MapType {
 	}
 
 	/**
-	 * Retrieves a mutable key range.
+	 * Retrieves a mutable key range. Initializes the range if it wasn't accessed before.
 	 * @param  {any}  key    Any key the parent map accepts.
-	 * @return {Set}         The key range. Changing the values in this Set will influence the MultiMap.
+	 * @return {Set}         The key range. Changing the values in this Set will influence the `MultiMap`.
 	 */
 	get(key) {
 		let set = super.get(key);

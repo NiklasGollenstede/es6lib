@@ -1,7 +1,7 @@
 {
 	"name": "es6lib",
 	"description": "lib",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"author": "Niklas Gollenstede",
 	"license": "MIT",
 	"repository": {
@@ -10,26 +10,18 @@
 	},
 	"dependencies": {},
 	"devDependencies": {
+		"babel-eslint": "^10.0.1",
 		"chai": "^3.3.0",
 		"chai-as-promised": "^5.1.0",
-		"mocha": "^2.3.3",
-		"babel-eslint": "7.1.1",
-		"eslint": "3.14.1",
-		"eslintrc": "NiklasGollenstede/eslintrc"
+		"eslint": "^5.6.0",
+		"eslintrc": "github:NiklasGollenstede/eslintrc#8e5b58d",
+		"mocha": "^2.3.3"
 	},
 	"scripts": {
 		"test": "mocha --require test/node",
 		"lint": "eslint --ignore-path .gitignore ."
 	},
 	"eslintConfig": {
-		"extends": "./node_modules/eslintrc/browser.js",
-		"globals": {
-			"setTimeout": true,
-			"clearTimeout": true,
-			"require": true
-		},
-		"env": {
-			"browser": false
-		}
+		"extends": "./node_modules/eslintrc/browser.js"
 	}
 }

@@ -28,7 +28,7 @@ exports.createElement = createElement; function createElement(tagName, propertie
 		}
 	}); })(element, properties);
 	childList && (function append(child) {
-		if (Array.isArray(child)) { return void child.forEach(append); }
+		if (Array.isArray(child)) { child.forEach(append); return; }
 		child && element.appendChild(typeof child === 'string' ? document.createTextNode(child) : child);
 	})(childList);
 	return element;
@@ -83,31 +83,26 @@ exports.saveAs = saveAs; function saveAs(content, name) {
 }
 
 /**
- * Attempts to open a file picker dialog.
- * NOTE: currently only works in Chrome, not in Firefox (52)!
- * @param  {object}           options  An object whose properties are copied to the underlying input element.
+ * Attempts to open a file picker dialog. Usually requires a direct user action to succeed.
+ * @param  {object?}          options  An optional object whose properties are copied to the underlying input element.
  *                                     Useful properties are 'accept' and 'multiple'.
  * @return {Promise<File>}             A Promise to a (possibly empty) Array of Files.
  *                                     Should reject if the dialog fails to open.
  */
-exports.loadFile = loadFile; function loadFile(options) { return new Promise(function(resolve, reject) {
+exports.loadFile = loadFile; function loadFile(options) { return new Promise((resolve, reject) => {
 	const window = (this || global).window, document = window.document; let done = false, open = false;
 
-	const input = Object.assign(window.document.createElement('input'), {
-		type: 'file',
-	}, options);
-	function onBlur() {
-		open = true; // file picker has opened
-	}
+	const input = Object.assign(document.createElement('input'), { type: 'file', }, options);
+	function onBlur() { open = true; } // file picker has opened
 	const timer = global.setTimeout(() => {
 		if (open || remove()) { return; }
 		// file picker didn't open or change
 		reject(new Error('Could not select file'));
-	}, 100);
+	}, 500);
 	function onFocus() { global.setTimeout(() => {
 		if (remove()) { return; }
 		resolve([ ]); // file picker was opened and closed, but no files were selected
-	}, 100); }
+	}, 500); } // after dialog close, wait for 'change'
 	function onChange(event) { try {
 		if (remove()) { return; }
 		resolve(Array.from(input.files)); // actually got file(s)
@@ -115,13 +110,13 @@ exports.loadFile = loadFile; function loadFile(options) { return new Promise(fun
 	function remove() {
 		if (done) { return true; } done = true;
 		global.clearTimeout(timer);
-		document.removeEventListener('change', onChange);
+		input.removeEventListener('change', onChange);
 		window.removeEventListener('focus', onFocus);
 		window.removeEventListener('blur', onBlur);
 		input.remove();
 		return false;
 	}
-	document.addEventListener('change', onChange);
+	input.addEventListener('change', onChange);
 	window.addEventListener('focus', onFocus);
 	window.addEventListener('blur', onBlur);
 	document.head.appendChild(input);
@@ -195,7 +190,6 @@ exports.readFromClipboard = readFromClipboard; function readFromClipboard(types,
 		if (done) { return; } done = true;
 		document.removeEventListener('paste', onPaste);
 		const transfer = event.clipboardData;
-		transfer.clearData();
 		if (typeof types === 'string' || !types) {
 			resolve(transfer.getData(types || 'text/plain'));
 		} else {
@@ -228,7 +222,7 @@ exports.whileVisible = whileVisible; function whileVisible(callback, time) {
 	let handle; const document = (this || global).window.document;
 	function check() {
 		if (document.hidden) {
-			return void (handle && global.clearInterval(handle));
+			handle && global.clearInterval(handle); return;
 		} else {
 			!handle && (handle = global.setInterval(callback, time));
 		}
@@ -303,7 +297,7 @@ exports.notify = notify; function notify(options) {
  */
 exports.DOMContentLoaded = new Promise((resolve, reject) => {
 	const document = global.document;
-	if (typeof document !== 'object') { return void reject(new Error('No `document` global')); }
+	if (typeof document !== 'object') { reject(new Error('No `document` global')); return; }
 	if (document.readyState !== 'interactive' && document.readyState !== 'complete') {
 		document.addEventListener('DOMContentLoaded', resolve);
 	} else {

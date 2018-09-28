@@ -92,7 +92,7 @@ class RemoveObserver {
 	 * Listens to a single removal of node.
 	 * @param  {Node}      child     The element to observe.
 	 * @param  {function}  callback  The function to execute on the nodes removal.
-	 * @return {Node?}               The child's parentNode, iff child has one.
+	 * @return {Node?}               The child's parentNode, iff `child` has one.
 	 */
 	static on(child, callback) {
 		const parent = child.parentNode;
@@ -102,7 +102,7 @@ class RemoveObserver {
 	}
 
 	/**
-	 * Removes a listener added by RemoveObserver.on().
+	 * Removes a listener added by `RemoveObserver.on()`.
 	 * @param  {Node}      child     The reference element.
 	 * @param  {function}  callback  The function that should not be executed on the nodes removal anymore.
 	 * @return {bool}                True iff a listener was actually removed.
@@ -116,11 +116,11 @@ class RemoveObserver {
 		return RemoveObserver.prototype.off.call(parent, child, callback);
 	}
 
-	// The DOM Node this RemoveObserver observes.
+	// The DOM Node this `RemoveObserver` observes.
 	get node() { return Self.get(this).node; }
 
 	/**
-	 * Same as the static RemoveObserver.on, only that child must be a direct child of this.node.
+	 * Same as the static `RemoveObserver.on`, only that `child` must be a direct child of `this.node`.
 	 * Faster when adding listeners for a lot of children of the same element.
 	 */
 	on(child, callback) {
@@ -137,7 +137,7 @@ class RemoveObserver {
 	}
 
 	/**
-	 * Same as the static RemoveObserver.off, only that it can only remove listeners of direct children of this.node.
+	 * Same as the static `RemoveObserver.off`, only that it can only remove listeners of direct children of `this.node`.
 	 */
 	off(child, callback) {
 		const self = Self.get(this);
@@ -151,7 +151,7 @@ class RemoveObserver {
 
 } exports.RemoveObserver = Object.freeze(RemoveObserver);
 
-// there are no properties on a RemoveObserver, every object that went as ref through this function can be used as this in any of the RemoveObserver methods
+// there are no properties on a `RemoveObserver`, every object that went as ref through this function can be used as `this` in any of the RemoveObserver methods
 function RemoveObserver_init(ref, node) {
 	let self = Self.get(node);
 	if (!self) {

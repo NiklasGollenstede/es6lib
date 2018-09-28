@@ -349,12 +349,12 @@ exports.periodic = periodic; function periodic(callback, waitFor) {
 	return new Promise((resolve, reject) => {
 		let expected = now(), index = 0;
 		function ping() {
-			let value; try { value = callback(); } catch (error) { return void reject(error); }
+			let value; try { value = callback(); } catch (error) { reject(error); return; }
 			(value && typeof value.then === 'function') ? value.then(pong, reject) : pong(value);
 		}
 		function pong(value) {
-			if (value) { return void resolve(value); }
-			try { expected += waitFor(++index); } catch (error) { return void reject(error); }
+			if (value) { resolve(value); return; }
+			try { expected += waitFor(++index); } catch (error) { reject(error); return; }
 			setTimeout(ping, expected - now());
 		}
 		setTimeout(ping, waitFor(0));
